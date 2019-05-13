@@ -571,20 +571,20 @@ struct note{
 void play_note(int freq, int duration){
 	//int i,n = duration/(1/freq);
 	int i,n;
-	int period;
-	period = 1/freq;
+	double period = 1/(double)freq;
 	n = duration/period;
 	for (i = 0; i < n; ++n) {
 		SET_BIT(PORTA,0);
-		avr_wait(1);
+		avr_wait(freq);
 		CLR_BIT(PORTA,0);
-		avr_wait(1);
+		avr_wait(freq);
 	}
-	return;
+	//return;
 }
 
 void play_song(){
 	//int i,n = sizeof(MySong)/sizeof(MySong[0])
+	
 	return ;
 }
 
@@ -608,9 +608,7 @@ int main(void)
 		display_time(&myTm);
 		set_time(&myTm);
 		*/
-		avr_wait(5);
-		play_note(100,2);
-		avr_wait(5);
+		play_note(440,5);
     }
 }
 
