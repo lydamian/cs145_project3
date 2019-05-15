@@ -9,8 +9,16 @@
 #include "lcd.h"
 #include <stdio.h>
 
+//globals
 const int MONTHS_MAX_DAYS[12] = {31, 28, 31,30, 31, 30, 31, 31, 30, 31, 30, 31};
 int keypad_pressed[16];
+const int notes[12][2] = 
+{
+	{45,45},{43,43},{40,40},
+		{38,38},{36,36},{34,34},
+			{32,32},{30,30},{29,29},
+				{27,27},{26,26},{24,24}
+};
 
 // determines if a key on the keypad is pressed
 int is_pressed(int r, int c){
@@ -571,44 +579,59 @@ struct note{
 void play_note(int freq, int duration){
 	//int i,n = duration/(1/freq);
 	int i,n;
-	double period = 1/(double)freq;
+	double period = 1.0/freq;
 	n = duration/period;
-	for (i = 0; i < n; ++n) {
+	
+	double high = (period/2)*1000;
+	double low = (period/2)*1000;
+	int TH = (int)high;
+	int TL = (int)low;
+
+	if(n == 0){
+		lcd_pos(0,0);
+		lcd_put('a');
+	}
+
+	//for (i = 0; i < n; ++i) {
+	for (;;) {
 		SET_BIT(PORTA,0);
-		avr_wait(freq);
+		avr_wait(TH);
 		CLR_BIT(PORTA,0);
-		avr_wait(freq);
+		avr_wait(TL);
 	}
 	//return;
 }
 
+/*
+void play_note(int duration, int index){
+	for(int i = 0; i < duration; i++){
+		SET_BIT(PORTA,0);
+		avr_wait_u(notes[index][0]);
+		CLR_BIT(PORTA,0);
+		avr_wait_u(notes[index][1]);
+	}
+}
+*/
+
+
 void play_song(){
 	//int i,n = sizeof(MySong)/sizeof(MySong[0])
-	
 	return ;
 }
 
 int main(void)
 {
 	//local variables
-	struct tm myTm;
-	char seconds[3];
 	int k;
 	
 	// setting up
 	setup();
-	initTm(&myTm, 2019, 1, 1, 0, 0, 0, 0);
 
 	// main logic
     while (1) 
     {	
-		/*
-		avr_wait(100);
-		keeptime(&myTm); // keeps 
-		display_time(&myTm);
-		set_time(&myTm);
-		*/
-		play_note(440,5);
+		play_note(440, 179666875);
+
     }
 }
 
