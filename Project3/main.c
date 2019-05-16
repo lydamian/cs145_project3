@@ -109,8 +109,10 @@ int exceedMonth(int year, int month, int day){
 	return 0;
 }
 
+int pitch = 2;
 int setup()
 {
+	inst_Jingle(pitch);
 	SET_BIT(DDRA, 0);
 	CLR_BIT(PORTA, 0);
 	lcd_init();
@@ -579,8 +581,8 @@ struct note{
 };
 
 struct note notes[10];
-int song_length = 27;
-int some_notes[] = {2,2,2,-1,2,2,2,-1,2,4,0,1,2,-1,3,3,3,3,3,2,2,2,2,2,1,1,2,1,4};
+int song_length = 30;
+int some_notes[] = {2,2,2,-1,2,2,2,-1,2,4,0,7,2,-1,3,3,3,3,3,2,2,6,6,2,1,1,2,1,-2,4};
 
 void wait(int duration){
 	CLR_BIT(PORTA, 0);
@@ -591,7 +593,7 @@ void wait(int duration){
 //instantiates the notes: frequency and duration
 void inst_Jingle(int i){
 	notes[0].freq = i*261; //C
-	notes[0].duration = 200;
+	notes[0].duration = 250;
 	notes[1].freq = i*293; //D
 	notes[1].duration = 200;
 	notes[2].freq = i*330;//E
@@ -600,6 +602,10 @@ void inst_Jingle(int i){
 	notes[3].duration = 200;
 	notes[4].freq = i*392; //G
 	notes[4].duration = 200;
+	notes[6].freq = i*330;//E#2
+	notes[6].duration = 100;
+	notes[7].freq = i*293; //D#2
+	notes[7].duration = 100;
 	
 	notes[5].freq = 1;
 	notes[5].duration = 200;
@@ -630,8 +636,16 @@ void play_note(struct note myNote){
 
 void play_song(int song[], int length){
 	for(int i = 0; i < length; i++){
+		if (is_pressed(3,3) == 1){
+			++pitch;
+			inst_Jingle(pitch);
+		}
 		if(song[i] == -1){
 			wait(500);
+			continue;
+		}
+		else if (song[i] == -2){
+			wait(600);
 			continue;
 		}
 		play_note(notes[song[i]]);
@@ -655,12 +669,11 @@ int main(void)
 	
 	// setting up
 	setup();
-	inst_Jingle(2);
 	// main logic
     while (1) 
     {	
 		play_song(some_notes, song_length);
-		wait(150);
+		wait(300);
     }
 }
 
