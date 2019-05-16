@@ -10,16 +10,17 @@
 #include <stdio.h>
 
 //globals
+	
 const int MONTHS_MAX_DAYS[12] = {31, 28, 31,30, 31, 30, 31, 31, 30, 31, 30, 31};
 int keypad_pressed[16];
-const int notes[12][2] = 
+/*const int notes[12][2] = 
 {
 	{45,45},{43,43},{40,40},
 		{38,38},{36,36},{34,34},
 			{32,32},{30,30},{29,29},
 				{27,27},{26,26},{24,24}
 };
-
+*/
 // determines if a key on the keypad is pressed
 int is_pressed(int r, int c){
 	// set all pins of c to N/C - weak 0.
@@ -121,6 +122,7 @@ int setup()
 		keypad_pressed[i] = 0;
 	}
 	*/
+	
 	return 1;
 }
 
@@ -575,26 +577,32 @@ struct note{
 	int freq;
 	int duration;
 };
-struct note notes[5];
-int some_notes[] = {0,1,2,3,1,2,0}
 
-for(int i =; i < some_note.length; i++){
-	play_note(notes[i]);
+struct note notes[10];
+int song_length = 27;
+int some_notes[] = {2,2,2,-1,2,2,2,-1,2,4,0,1,2,-1,3,3,3,3,3,2,2,2,2,2,1,1,2,1,4};
+
+void wait(int duration){
+	CLR_BIT(PORTA, 0);
+	avr_wait(duration);	
 }
 
 //contains all 5 notes required to play Jingle Bells
 //instantiates the notes: frequency and duration
-void inst_Jingle(){
-	notes[0].freq = 261; //C
-	notes[0].duration = 1800;
-	notes[1].freq = 293; //D
-	notes[1].duration = 1800;
-	notes[2].freq = 330;//E
-	notes[2].duration = 1800;
-	notes[3].freq = 349; //F
-	notes[3].duration = 1800;
-	notes[4].freq = 392; //G
-	notes[4].duration = 1800;
+void inst_Jingle(int i){
+	notes[0].freq = i*261; //C
+	notes[0].duration = 200;
+	notes[1].freq = i*293; //D
+	notes[1].duration = 200;
+	notes[2].freq = i*330;//E
+	notes[2].duration = 200;
+	notes[3].freq = i*349; //F
+	notes[3].duration = 200;
+	notes[4].freq = i*392; //G
+	notes[4].duration = 200;
+	
+	notes[5].freq = 1;
+	notes[5].duration = 200;
 }
 
 void play_note(struct note myNote){
@@ -603,14 +611,14 @@ void play_note(struct note myNote){
 	
 	int i,n;
 	double period = 1.0/freq;
-	n = duration/period;
+	n = duration;
 	
 	double high = (period/2)*100000;
 	double low = (period/2)*100000;
 	int TH = (int)high;
 	int TL = (int)low;
 
-//1  cycle
+    //1  cycle
 	for (i = 0; i < n; i++) {
 		SET_BIT(PORTA,0);
 		avr_wait_u(TH);
@@ -620,12 +628,14 @@ void play_note(struct note myNote){
 	//return;
 }
 
-void play_song(){
-	int i;
-	//int n = sizeof(JingleBells)/sizeof(JingleBells[0]);
-	//for(int i = 0; i < n; i++){
-	//	play_note(JingleBells[i]);
-	//}
+void play_song(int song[], int length){
+	for(int i = 0; i < length; i++){
+		if(song[i] == -1){
+			wait(500);
+			continue;
+		}
+		play_note(notes[song[i]]);
+	}
 	return ;
 }
 
@@ -645,14 +655,12 @@ int main(void)
 	
 	// setting up
 	setup();
-
+	inst_Jingle(2);
 	// main logic
     while (1) 
     {	
-		play_note(note1);
-		play_note(note2);
-		play_note(note3);
-		play_note(note4);
+		play_song(some_notes, song_length);
+		wait(150);
     }
 }
 
