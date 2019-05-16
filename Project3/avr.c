@@ -19,11 +19,14 @@ avr_wait(unsigned short msec)
 	TCCR0 = 0;
 }
 
+void
 avr_wait_u(unsigned short msec){
+	TCCR0 = 3;
 	while (msec--) {
-		TCNT0 = (unsigned char)(256 - (XTAL_FRQ / 64) * 0.000001);
+		TCNT0 = (unsigned char)(256 - (XTAL_FRQ / 64) * 0.00001);
 		SET_BIT(TIFR, TOV0);
 		WDR();
 		while (!GET_BIT(TIFR, TOV0));
 	}
+	TCCR0 = 0;
 }

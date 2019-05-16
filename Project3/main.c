@@ -576,46 +576,35 @@ struct note{
 	int duration;
 };
 
-void play_note(int freq, int duration){
-	//int i,n = duration/(1/freq);
+void play_note(struct note myNote){
+	int freq = myNote.freq;
+	int duration = myNote.duration;
+	
 	int i,n;
 	double period = 1.0/freq;
 	n = duration/period;
 	
-	double high = (period/2)*1000;
-	double low = (period/2)*1000;
+	double high = (period/2)*100000;
+	double low = (period/2)*100000;
 	int TH = (int)high;
 	int TL = (int)low;
 
-	if(n == 0){
-		lcd_pos(0,0);
-		lcd_put('a');
-	}
-
-	//for (i = 0; i < n; ++i) {
-	for (;;) {
+//1  cycle
+	for (i = 0; i < n; i++) {
 		SET_BIT(PORTA,0);
-		avr_wait(TH);
+		avr_wait_u(TH);
 		CLR_BIT(PORTA,0);
-		avr_wait(TL);
+		avr_wait_u(TL);
 	}
 	//return;
 }
 
-/*
-void play_note(int duration, int index){
-	for(int i = 0; i < duration; i++){
-		SET_BIT(PORTA,0);
-		avr_wait_u(notes[index][0]);
-		CLR_BIT(PORTA,0);
-		avr_wait_u(notes[index][1]);
-	}
-}
-*/
-
-
 void play_song(){
-	//int i,n = sizeof(MySong)/sizeof(MySong[0])
+	int i;
+	//int n = sizeof(JingleBells)/sizeof(JingleBells[0]);
+	//for(int i = 0; i < n; i++){
+	//	play_note(JingleBells[i]);
+	//}
 	return ;
 }
 
@@ -623,6 +612,15 @@ int main(void)
 {
 	//local variables
 	int k;
+	struct note note1, note2, note3, note4;
+	note1.freq = 440;
+	note1.duration = 150;
+	note2.freq = 466.16;
+	note2.duration = 150;
+	note3.freq = 493;
+	note3.duration = 150;
+	note4.freq = 600;
+	note4.duration = 150;
 	
 	// setting up
 	setup();
@@ -630,8 +628,10 @@ int main(void)
 	// main logic
     while (1) 
     {	
-		play_note(440, 179666875);
-
+		play_note(note1);
+		play_note(note2);
+		play_note(note3);
+		play_note(note4);
     }
 }
 
