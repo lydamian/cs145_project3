@@ -575,6 +575,27 @@ struct note{
 	int freq;
 	int duration;
 };
+struct note notes[5];
+int some_notes[] = {0,1,2,3,1,2,0}
+
+for(int i =; i < some_note.length; i++){
+	play_note(notes[i]);
+}
+
+//contains all 5 notes required to play Jingle Bells
+//instantiates the notes: frequency and duration
+void inst_Jingle(){
+	notes[0].freq = 261; //C
+	notes[0].duration = 1800;
+	notes[1].freq = 293; //D
+	notes[1].duration = 1800;
+	notes[2].freq = 330;//E
+	notes[2].duration = 1800;
+	notes[3].freq = 349; //F
+	notes[3].duration = 1800;
+	notes[4].freq = 392; //G
+	notes[4].duration = 1800;
+}
 
 void play_note(int freq, int duration){
 	//int i,n = duration/(1/freq);
