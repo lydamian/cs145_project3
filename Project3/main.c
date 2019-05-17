@@ -630,11 +630,27 @@ void play_note(struct note myNote){
 
 void play_song(int song[], int length){
 	for(int i = 0; i < length; i++){
-		if(song[i] == -1){
+		if (get_key() == 1){ //control pitch up: 1 on keypad
+			++PITCH;
+			inst_Jingle(PITCH, DURATION);
+		}
+		if (get_key() == 2){ //control pitch down: 2 on keypad
+			--PITCH;
+			inst_Jingle(PITCH, DURATION);
+		}
+		if (get_key() == 3){ //control duration up: 3 on keypad
+			DURATION += 100;
+			inst_Jingle(PITCH, DURATION);
+		}
+		if (get_key() == 4){ //control duration down: A on keypad
+			DURATION -= 25;
+			inst_Jingle(PITCH, DURATION);
+		}
+		if(song[i] == -1){ //short rest
 			wait(500);
 			continue;
 		}
-		else if (song[i] == -2){
+		else if (song[i] == -2){ //long rest
 			wait(600);
 			continue;
 		}
@@ -647,9 +663,9 @@ int main(void)
 {
 	//local variables
 	int k;
-	struct tm
+	struct tm;
 	
-	// setting up
+	
 	setup();
 	
 	// main logic
@@ -659,10 +675,12 @@ int main(void)
 		play_song(some_notes, song_length);
 		
 		// program pitch
+		/*
 		if (get_key() == 1){
 			++PITCH;
 			inst_Jingle(PITCH, DURATION);
 		}
+		*/
 
 		// program duration
 		if(get_key() == 2){
