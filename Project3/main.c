@@ -12,15 +12,10 @@
 //globals
 	
 const int MONTHS_MAX_DAYS[12] = {31, 28, 31,30, 31, 30, 31, 31, 30, 31, 30, 31};
+int PITCH = 2;
+int DURATION = 130;
 int keypad_pressed[16];
-/*const int notes[12][2] = 
-{
-	{45,45},{43,43},{40,40},
-		{38,38},{36,36},{34,34},
-			{32,32},{30,30},{29,29},
-				{27,27},{26,26},{24,24}
-};
-*/
+
 // determines if a key on the keypad is pressed
 int is_pressed(int r, int c){
 	// set all pins of c to N/C - weak 0.
@@ -109,10 +104,9 @@ int exceedMonth(int year, int month, int day){
 	return 0;
 }
 
-int pitch = 2;
 int setup()
 {
-	inst_Jingle(pitch);
+	inst_Jingle(PITCH, DURATION);
 	SET_BIT(DDRA, 0);
 	CLR_BIT(PORTA, 0);
 	lcd_init();
@@ -591,21 +585,21 @@ void wait(int duration){
 
 //contains all 5 notes required to play Jingle Bells
 //instantiates the notes: frequency and duration
-void inst_Jingle(int i){
-	notes[0].freq = i*261; //C
-	notes[0].duration = 250;
-	notes[1].freq = i*293; //D
-	notes[1].duration = 200;
-	notes[2].freq = i*330;//E
-	notes[2].duration = 200;
-	notes[3].freq = i*349; //F
-	notes[3].duration = 200;
-	notes[4].freq = i*392; //G
-	notes[4].duration = 200;
-	notes[6].freq = i*330;//E#2
-	notes[6].duration = 100;
-	notes[7].freq = i*293; //D#2
-	notes[7].duration = 100;
+void inst_Jingle(int pitch_scalar, int duration){
+	notes[0].freq = pitch_scalar*261; //C
+	notes[0].duration = duration;
+	notes[1].freq = pitch_scalar*293; //D
+	notes[1].duration = duration;
+	notes[2].freq = pitch_scalar*330;//E
+	notes[2].duration = duration;
+	notes[3].freq = pitch_scalar*349; //F
+	notes[3].duration = duration;
+	notes[4].freq = pitch_scalar*392; //G
+	notes[4].duration = duration;
+	notes[6].freq = pitch_scalar*330;//E#2
+	notes[6].duration = duration;
+	notes[7].freq = pitch_scalar*293; //D#2
+	notes[7].duration = duration;
 	
 	notes[5].freq = 1;
 	notes[5].duration = 200;
@@ -636,10 +630,6 @@ void play_note(struct note myNote){
 
 void play_song(int song[], int length){
 	for(int i = 0; i < length; i++){
-		if (is_pressed(3,3) == 1){
-			++pitch;
-			inst_Jingle(pitch);
-		}
 		if(song[i] == -1){
 			wait(500);
 			continue;
@@ -657,23 +647,28 @@ int main(void)
 {
 	//local variables
 	int k;
-	struct note note1, note2, note3, note4;
-	note1.freq = 440;
-	note1.duration = 150;
-	note2.freq = 466.16;
-	note2.duration = 150;
-	note3.freq = 493;
-	note3.duration = 150;
-	note4.freq = 600;
-	note4.duration = 150;
+	struct tm
 	
 	// setting up
 	setup();
+	
 	// main logic
     while (1) 
     {	
+		// playing song
 		play_song(some_notes, song_length);
-		wait(300);
+		
+		// program pitch
+		if (get_key() == 1){
+			++PITCH;
+			inst_Jingle(PITCH, DURATION);
+		}
+
+		// program duration
+		if(get_key() == 2){
+			DURATION += 20;
+			inst_Jingle(PITCH, DURATION);
+		}
     }
 }
 
